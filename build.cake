@@ -85,6 +85,10 @@ Task("Package")
 // TASK TARGETS
 //////////////////////////////////////////////////////////////////////
 
+Task("AppVeyor")
+	.IsDependentOn("Build")
+	.IsDependentOn("Package");
+
 Task("Default")
     .IsDependentOn("Build");
 
