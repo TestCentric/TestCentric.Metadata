@@ -18,6 +18,53 @@ var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 
 //////////////////////////////////////////////////////////////////////
+// SET PACKAGE VERSION
+//////////////////////////////////////////////////////////////////////
+
+var dbgSuffix = configuration == "Debug" ? "-dbg" : "";
+var packageVersion = VERSION + dbgSuffix;
+
+if (BuildSystem.IsRunningOnAppVeyor)
+{
+	var tag = AppVeyor.Environment.Repository.Tag;
+
+	if (tag.IsTag)
+	{
+		packageVersion = tag.Name;
+	}
+	else
+	{
+		var buildNumber = AppVeyor.Environment.Build.Number.ToString("00000");
+		var branch = AppVeyor.Environment.Repository.Branch;
+		var isPullRequest = AppVeyor.Environment.PullRequest.IsPullRequest;
+
+		if (branch == "master" && !isPullRequest)
+		{
+			packageVersion = VERSION + "-dev-" + buildNumber + dbgSuffix;
+		}
+		else
+		{
+			var suffix = "-ci-" + buildNumber + dbgSuffix;
+
+			if (isPullRequest)
+				suffix += "-pr-" + AppVeyor.Environment.PullRequest.Number;
+			else
+				suffix += "-" + branch;
+
+			// Nuget limits "special version part" to 20 chars. Add one for the hyphen.
+			if (suffix.Length > 21)
+				suffix = suffix.Substring(0, 21);
+
+			suffix = suffix.Replace(".", "");
+
+			packageVersion = VERSION + suffix;
+		}
+	}
+
+	AppVeyor.UpdateBuildVersion(packageVersion);
+}
+
+//////////////////////////////////////////////////////////////////////
 // DEFINE RUN CONSTANTS
 //////////////////////////////////////////////////////////////////////
 
