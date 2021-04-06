@@ -89,7 +89,7 @@ bool IsDevelopmentRelease = PackageVersion.Contains("-dev-");
 const string MYGET_PUSH_URL = "https://www.myget.org/F/testcentric/api/v2";
 var MYGET_API_KEY = EnvironmentVariable("MYGET_API_KEY");
 
-const string NUGET_PUSH_URL = "https://api.nuget.org/v3/index.json";
+const string NUGET_PUSH_URL = "https://www.nuget.org/F/testcentric/api/v2/package";
 var NUGET_API_KEY = EnvironmentVariable("NUGET_API_KEY");
 
 const string GITHUB_OWNER = "TestCentric";
