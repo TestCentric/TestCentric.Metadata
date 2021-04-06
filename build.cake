@@ -82,13 +82,19 @@ var PACKAGE_DIR = PROJECT_DIR + "package/";
 var NUGET_DIR = PROJECT_DIR + "nuget/";
 
 // Publishing
-const string MYGET_PUSH_URL = "https://www.myget.org/F/testcentric/api/v2";
-const string NUGET_PUSH_URL = "https://api.nuget.org/v3/index.json";
-var MYGET_API_KEY = EnvironmentVariable("MYGET_API_KEY");
-var NUGET_API_KEY = EnvironmentVariable("NUGET_API_KEY");
+var PackageName = NUGET_ID + "." + PackageVersion + ".nupkg";
 bool IsProductionRelease = !PackageVersion.Contains("-");
 bool IsDevelopmentRelease = PackageVersion.Contains("-dev-");
-var PackageName = NUGET_ID + "." + PackageVersion + ".nupkg";
+
+const string MYGET_PUSH_URL = "https://www.myget.org/F/testcentric/api/v2";
+var MYGET_API_KEY = EnvironmentVariable("MYGET_API_KEY");
+
+const string NUGET_PUSH_URL = "https://api.nuget.org/v3/index.json";
+var NUGET_API_KEY = EnvironmentVariable("NUGET_API_KEY");
+
+const string GITHUB_OWNER = "TestCentric";
+const string GITHUB_REPO = "TestCentric.Metadata";
+var GITHUB_ACCESS_TOKEN = EnvironmentVariable("GITHUB_ACCESS_TOKEN");
 
 //////////////////////////////////////////////////////////////////////
 // CLEAN
@@ -182,6 +188,25 @@ Task("PublishToNuGet")
         });
     });
 
+Task("CreateDraftRelease")
+	.WithCriteria(IsProductionRelease)
+	.Does(() =>
+	{
+		string releaseName = $"TestCentric.Metadata {PackageVersion}";
+		string milestone = PackageVersion;
+
+		Information($"Creating draft release {releaseName} from milestone {milestone}");
+
+		GitReleaseManagerCreate(GITHUB_ACCESS_TOKEN, GITHUB_OWNER, GITHUB_REPO, new GitReleaseManagerCreateSettings()
+		{
+			Name = releaseName,
+			Milestone = milestone
+		});
+
+		GitReleaseManagerExport(GITHUB_ACCESS_TOKEN, GITHUB_OWNER, GITHUB_REPO, "DraftRelease.md",
+			new GitReleaseManagerExportSettings() { TagName = milestone });
+	});
+
 //////////////////////////////////////////////////////////////////////
 // TASK TARGETS
 //////////////////////////////////////////////////////////////////////
@@ -190,7 +215,8 @@ Task("AppVeyor")
 	.IsDependentOn("Build")
 	.IsDependentOn("Package")
 	.IsDependentOn("PublishToMyGet")
-	.IsDependentOn("PublishToNuGet");
+	.IsDependentOn("PublishToNuGet")
+	.IsDependentOn("CreateDraftRelease");
 
 Task("Default")
     .IsDependentOn("Build");

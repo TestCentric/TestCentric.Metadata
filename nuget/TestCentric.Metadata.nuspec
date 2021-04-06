@@ -4,19 +4,19 @@
   <metadata>
     <id>TestCentric.Metadata</id>
     <version>0.0.0</version>
-    <description>This package includes the TestCentric metadata assembly, which forms part of the TestCentric engine. It is provided in a separate package for the benefit of other projects, which may find it useful.</description>
+    <description>This package provides the TestCentric metadata assembly, which is used by the TestCentric engine. It is provided in a separate package for the benefit of other projects, which may find it useful.</description>
     <authors>Charlie Poole</authors>
     <owners>Charlie Poole</owners>
     <projectUrl>http://test-centric.org</projectUrl>
     <license type="expression">MIT</license>
-    <iconUrl>https://cdn.rawgit.com/TestCentric/resources/main/images/icon/nunit_256.png</iconUrl>
+    <iconUrl>https://test-centric.org/assets/img/testcentric_128x128.png</iconUrl>
     <icon>testcentric.png</icon>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <releaseNotes>https://raw.githubusercontent.com/TestCentric/testcentric-gui/main/CHANGES.txt</releaseNotes>
-    <copyright>Copyright (c) 2018-2020 Charlie Poole</copyright>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright (c) 2021 Charlie Poole</copyright>
     <language>en-US</language>
     <tags>testcentric nunit gui runner test centric testing tdd metadata mono cecil</tags>
-    <repository type="git" url="https://github.com/TestCentric/testcentric-gui"/>
+    <repository type="git" url="https://github.com/TestCentric/TestCentric.Metadata"/>
     <title>TestCentric Metadata Assembly</title>
   </metadata>
   <files>
