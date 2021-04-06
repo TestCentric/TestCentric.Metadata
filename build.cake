@@ -1,9 +1,8 @@
+#tool nuget:?package=GitReleaseManager&version=0.11.0
+
 //////////////////////////////////////////////////////////////////////
 // PROJECT-SPECIFIC
 //////////////////////////////////////////////////////////////////////
-
-// When copying the script to support a different extension, the
-// main changes needed should be in this section.
 
 var SOLUTION_FILE = "TestCentric.Metadata.sln";
 var GITHUB_SITE = "https://github.com/TestCentric/TestCentric.Metadata";
@@ -15,18 +14,17 @@ var MAIN_BRANCH = "main";
 // ARGUMENTS  
 //////////////////////////////////////////////////////////////////////
 
-var target = Argument("target", "Default");
-var configuration = Argument("configuration", "Release");
-var packageVersion = Argument("packageVersion", DEFAULT_VERSION);
+var Configuration = Argument("configuration", "Release");
+var PackageVersion = Argument("packageVersion", DEFAULT_VERSION);
 
 //////////////////////////////////////////////////////////////////////
 // SET PACKAGE VERSION
 //////////////////////////////////////////////////////////////////////
 
-var dash = packageVersion.IndexOf('-');
-var baseVersion = dash > 0 
-	? packageVersion.Substring(0, dash)
-	: packageVersion;
+var dash = PackageVersion.IndexOf('-');
+var BaseVersion = dash > 0 
+	? PackageVersion.Substring(0, dash)
+	: PackageVersion;
 
 // Any prerelease label in packageVersion is ignored on AppVeyor
 // where the baseVersion is used to calculate a new packageVersion.
@@ -38,7 +36,7 @@ if (BuildSystem.IsRunningOnAppVeyor)
 	{
 		// A tag is used directly as the package Version.
 		// It may include a prerelease lable like beta1.
-		packageVersion = tag.Name;
+		PackageVersion = tag.Name;
 	}
 	else
 	{
@@ -49,7 +47,7 @@ if (BuildSystem.IsRunningOnAppVeyor)
 		if (branch == MAIN_BRANCH && !isPullRequest)
 		{
 			// When merging to main or pushing directly, use dev label
-			packageVersion = baseVersion + "-dev-" + buildNumber;
+			PackageVersion = BaseVersion + "-dev-" + buildNumber;
 		}
 		else
 		{
@@ -66,22 +64,31 @@ if (BuildSystem.IsRunningOnAppVeyor)
 
 			suffix = suffix.Replace(".", "");
 
-			packageVersion = baseVersion + suffix;
+			PackageVersion = BaseVersion + suffix;
 		}
 	}
 
-	AppVeyor.UpdateBuildVersion(packageVersion);
+	AppVeyor.UpdateBuildVersion(PackageVersion);
 }
 
 //////////////////////////////////////////////////////////////////////
-// DEFINE RUN CONSTANTS
+// DEFINE CONSTANTS AND RUN SETTINGS
 //////////////////////////////////////////////////////////////////////
 
 // Directories
 var PROJECT_DIR = Context.Environment.WorkingDirectory.FullPath + "/";
-var BIN_DIR = PROJECT_DIR + "bin/" + configuration + "/";
+var BIN_DIR = PROJECT_DIR + "bin/" + Configuration + "/";
 var PACKAGE_DIR = PROJECT_DIR + "package/";
 var NUGET_DIR = PROJECT_DIR + "nuget/";
+
+// Publishing
+const string MYGET_PUSH_URL = "https://www.myget.org/F/testcentric/api/v2";
+const string NUGET_PUSH_URL = "https://api.nuget.org/v3/index.json";
+var MYGET_API_KEY = EnvironmentVariable("MYGET_API_KEY");
+var NUGET_API_KEY = EnvironmentVariable("NUGET_API_KEY");
+bool IsProductionRelease = !PackageVersion.Contains("-");
+bool IsDevelopmentRelease = PackageVersion.Contains("-dev-");
+var PackageName = NUGET_ID + "." + PackageVersion + ".nupkg";
 
 //////////////////////////////////////////////////////////////////////
 // CLEAN
@@ -115,7 +122,7 @@ Task("Build")
 		if (IsRunningOnWindows())
 		{
 			MSBuild(SOLUTION_FILE, new MSBuildSettings()
-				.SetConfiguration(configuration)
+				.SetConfiguration(Configuration)
 				.SetMSBuildPlatform(MSBuildPlatform.Automatic)
 				.SetVerbosity(Verbosity.Minimal)
 				.SetNodeReuse(false)
@@ -126,7 +133,7 @@ Task("Build")
 		{
 			XBuild(SOLUTION_FILE, new XBuildSettings()
 				.WithTarget("Build")
-				.WithProperty("Configuration", configuration)
+				.WithProperty("Configuration", Configuration)
 				.SetVerbosity(Verbosity.Minimal)
 			);
 		}
@@ -142,7 +149,7 @@ Task("Package")
 	{
         NuGetPack(NUGET_DIR + NUGET_ID + ".nuspec", new NuGetPackSettings()
         {
-            Version = packageVersion,
+            Version = PackageVersion,
             OutputDirectory = PACKAGE_DIR,
             NoPackageAnalysis = true
         });
@@ -152,41 +159,27 @@ Task("Package")
 // PUBLISH PACKAGES
 //////////////////////////////////////////////////////////////////////
 
-Task("Publish")
+Task("PublishToMyGet")
+	.WithCriteria(IsProductionRelease || IsDevelopmentRelease)
 	.IsDependentOn("Package")
 	.Does(() =>
 	{
-		var package = PACKAGE_DIR + NUGET_ID + "." + packageVersion + ".nupkg";
-
-		bool isProductionRelease = !packageVersion.Contains("-");
-		bool isDevRelease = packageVersion.Contains("-dev-");
-
-		if (!isDevRelease && !isProductionRelease)
-			Information("Nothing to publish from this run.");
-
-		if (isDevRelease)
+		NuGetPush(PACKAGE_DIR + PackageName, new NuGetPushSettings()
 		{
-			const string MYGET_PUSH_URL = "https://www.myget.org/F/testcentric/api/v2";
-			var mygetApiKey = EnvironmentVariable("MYGET_API_KEY");
+			ApiKey = MYGET_API_KEY,
+			Source = MYGET_PUSH_URL
+		});
+	});
 
-			NuGetPush(package, new NuGetPushSettings()
-			{
-				ApiKey = mygetApiKey,
-				Source = MYGET_PUSH_URL
-			});
-		}
-
-        if (isProductionRelease)
+Task("PublishToNuGet")
+	.WithCriteria(IsProductionRelease)
+	.Does(() =>
+	{
+        NuGetPush(PACKAGE_DIR + PackageName, new NuGetPushSettings()
         {
-            const string NUGET_PUSH_URL = "https://api.nuget.org/v3/index.json";
-            var nugetApiKey = EnvironmentVariable("NUGET_API_KEY");
-
-            NuGetPush(package, new NuGetPushSettings()
-            {
-                ApiKey = nugetApiKey,
-                Source = NUGET_PUSH_URL
-            });
-        }
+            ApiKey = NUGET_API_KEY,
+            Source = NUGET_PUSH_URL
+        });
     });
 
 //////////////////////////////////////////////////////////////////////
@@ -196,7 +189,8 @@ Task("Publish")
 Task("AppVeyor")
 	.IsDependentOn("Build")
 	.IsDependentOn("Package")
-	.IsDependentOn("Publish");
+	.IsDependentOn("PublishToMyGet")
+	.IsDependentOn("PublishToNuGet");
 
 Task("Default")
     .IsDependentOn("Build");
