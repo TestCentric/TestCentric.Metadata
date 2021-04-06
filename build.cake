@@ -17,20 +17,27 @@ var MAIN_BRANCH = "main";
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
+var packageVersion = Argument("packageVersion", DEFAULT_VERSION);
 
 //////////////////////////////////////////////////////////////////////
 // SET PACKAGE VERSION
 //////////////////////////////////////////////////////////////////////
 
-var dbgSuffix = configuration == "Debug" ? "-dbg" : "";
-var packageVersion = DEFAULT_VERSION + dbgSuffix;
+var dash = packageVersion.IndexOf('-');
+var baseVersion = dash > 0 
+	? packageVersion.Substring(0, dash)
+	: packageVersion;
 
+// Any prerelease label in packageVersion is ignored on AppVeyor
+// where the baseVersion is used to calculate a new packageVersion.
 if (BuildSystem.IsRunningOnAppVeyor)
 {
 	var tag = AppVeyor.Environment.Repository.Tag;
 
 	if (tag.IsTag)
 	{
+		// A tag is used directly as the package Version.
+		// It may include a prerelease lable like beta1.
 		packageVersion = tag.Name;
 	}
 	else
@@ -41,11 +48,12 @@ if (BuildSystem.IsRunningOnAppVeyor)
 
 		if (branch == MAIN_BRANCH && !isPullRequest)
 		{
-			packageVersion = DEFAULT_VERSION + "-dev-" + buildNumber + dbgSuffix;
+			// When merging to main or pushing directly, use dev label
+			packageVersion = baseVersion + "-dev-" + buildNumber;
 		}
 		else
 		{
-			var suffix = "-ci-" + buildNumber + dbgSuffix;
+			var suffix = "-ci-" + buildNumber;
 
 			if (isPullRequest)
 				suffix += "-pr-" + AppVeyor.Environment.PullRequest.Number;
@@ -58,7 +66,7 @@ if (BuildSystem.IsRunningOnAppVeyor)
 
 			suffix = suffix.Replace(".", "");
 
-			packageVersion = DEFAULT_VERSION + suffix;
+			packageVersion = baseVersion + suffix;
 		}
 	}
 
