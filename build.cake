@@ -170,6 +170,8 @@ Task("PublishToMyGet")
 	.IsDependentOn("Package")
 	.Does(() =>
 	{
+		Information($"Publishing {PackageName} to MyGet");
+
 		NuGetPush(PACKAGE_DIR + PackageName, new NuGetPushSettings()
 		{
 			ApiKey = MYGET_API_KEY,
@@ -177,34 +179,34 @@ Task("PublishToMyGet")
 		});
 	});
 
-Task("PublishToNuGet")
+//////////////////////////////////////////////////////////////////////
+// CREATE A PRODUCTION RELEASE
+//////////////////////////////////////////////////////////////////////
+
+Task("CreateProductionRelease")
 	.WithCriteria(IsProductionRelease)
 	.Does(() =>
 	{
-        NuGetPush(PACKAGE_DIR + PackageName, new NuGetPushSettings()
-        {
-            ApiKey = NUGET_API_KEY,
-            Source = NUGET_PUSH_URL
-        });
-    });
+		Information($"Publishing {PackageName} to NuGet");
 
-Task("CreateDraftRelease")
-	.WithCriteria(IsProductionRelease)
-	.Does(() =>
-	{
-		string releaseName = $"TestCentric.Metadata {PackageVersion}";
-		string milestone = PackageVersion;
-
-		Information($"Creating draft release {releaseName} from milestone {milestone}");
-
-		GitReleaseManagerCreate(GITHUB_ACCESS_TOKEN, GITHUB_OWNER, GITHUB_REPO, new GitReleaseManagerCreateSettings()
+		NuGetPush(PACKAGE_DIR + PackageName, new NuGetPushSettings()
 		{
-			Name = releaseName,
-			Milestone = milestone
+			ApiKey = NUGET_API_KEY,
+			Source = NUGET_PUSH_URL
 		});
 
-		GitReleaseManagerExport(GITHUB_ACCESS_TOKEN, GITHUB_OWNER, GITHUB_REPO, "DraftRelease.md",
-			new GitReleaseManagerExportSettings() { TagName = milestone });
+		Information($"Publishing release {PackageVersion} on GitHub");
+
+		GitReleaseManagerCreate(GITHUB_ACCESS_TOKEN, GITHUB_OWNER, GITHUB_REPO,
+			new GitReleaseManagerCreateSettings()
+			{
+				Name = $"TestCentric.Metadata {PackageVersion}",
+				Milestone = PackageVersion
+			});
+
+		GitReleaseManagerAddAssets(GITHUB_ACCESS_TOKEN, GITHUB_OWNER, GITHUB_REPO,
+			PackageVersion, PACKAGE_DIR + PackageName);
+		GitReleaseManagerClose(GITHUB_ACCESS_TOKEN, GITHUB_OWNER, GITHUB_REPO, PackageVersion);
 	});
 
 //////////////////////////////////////////////////////////////////////
@@ -215,8 +217,7 @@ Task("AppVeyor")
 	.IsDependentOn("Build")
 	.IsDependentOn("Package")
 	.IsDependentOn("PublishToMyGet")
-	.IsDependentOn("PublishToNuGet")
-	.IsDependentOn("CreateDraftRelease");
+	.IsDependentOn("CreateProductionRelease");
 
 Task("Default")
     .IsDependentOn("Build");
