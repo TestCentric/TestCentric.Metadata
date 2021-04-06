@@ -134,7 +134,7 @@ Task("Package")
 	{
         NuGetPack(NUGET_DIR + NUGET_ID + ".nuspec", new NuGetPackSettings()
         {
-            Version = DEFAULT_VERSION,
+            Version = packageVersion,
             OutputDirectory = PACKAGE_DIR,
             NoPackageAnalysis = true
         });
