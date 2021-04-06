@@ -7,8 +7,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testcentric.engine.metadata
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{96693C7E-4547-491A-BF05-865897ACF46C}"
 	ProjectSection(SolutionItems) = preProject
+		build.cake = build.cake
 		LICENSE = LICENSE
 		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{A6EB94CC-A287-4D4E-9D5C-FBA337E29008}"
+	ProjectSection(SolutionItems) = preProject
+		nuget\TestCentric.Metadata.nuspec = nuget\TestCentric.Metadata.nuspec
 	EndProjectSection
 EndProject
 Global
@@ -24,6 +30,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A6EB94CC-A287-4D4E-9D5C-FBA337E29008} = {96693C7E-4547-491A-BF05-865897ACF46C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AEFCDA38-CDDF-4B8F-A199-20E0FB2E007C}
