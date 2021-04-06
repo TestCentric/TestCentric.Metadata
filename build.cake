@@ -141,12 +141,37 @@ Task("Package")
     });
 
 //////////////////////////////////////////////////////////////////////
+// PUBLISH PACKAGES
+//////////////////////////////////////////////////////////////////////
+
+Task("Publish")
+	.IsDependentOn("Package")
+	.Does(() =>
+	{
+		const string MYGET_PUSH_URL = "https://www.myget.org/F/testcentric/api/v2";
+		const string NUGET_PUSH_URL = "https://api.nuget.org/v3/index.json";
+
+		var package = PACKAGE_DIR + NUGET_ID + "." + packageVersion + ".nupkg";
+		var mygetApiKey = EnvironmentVariable("MYGET_API_KEY");
+
+		if (packageVersion.Contains("-dev-"))
+			NuGetPush(package, new NuGetPushSettings()
+			{ 
+				ApiKey = mygetApiKey,
+				Source = MYGET_PUSH_URL
+			});
+		else
+			Information("Nothing to publish from this run.");
+	});
+
+//////////////////////////////////////////////////////////////////////
 // TASK TARGETS
 //////////////////////////////////////////////////////////////////////
 
 Task("AppVeyor")
 	.IsDependentOn("Build")
-	.IsDependentOn("Package");
+	.IsDependentOn("Package")
+	.IsDependentOn("Publish");
 
 Task("Default")
     .IsDependentOn("Build");
