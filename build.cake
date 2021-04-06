@@ -156,20 +156,37 @@ Task("Publish")
 	.IsDependentOn("Package")
 	.Does(() =>
 	{
-		const string MYGET_PUSH_URL = "https://www.myget.org/F/testcentric/api/v2";
-		const string NUGET_PUSH_URL = "https://api.nuget.org/v3/index.json";
-
 		var package = PACKAGE_DIR + NUGET_ID + "." + packageVersion + ".nupkg";
-		var mygetApiKey = EnvironmentVariable("MYGET_API_KEY");
 
-		if (packageVersion.Contains("-dev-"))
+		bool isProductionRelease = packageVersion.Contains("-");
+		bool isDevRelease = packageVersion.Contains("-dev-");
+
+		if (!isDevRelease && !isProductionRelease)
+			Information("Nothing to publish from this run.");
+
+		if (isDevRelease)
+		{
+			const string MYGET_PUSH_URL = "https://www.myget.org/F/testcentric/api/v2";
+			var mygetApiKey = EnvironmentVariable("MYGET_API_KEY");
+
 			NuGetPush(package, new NuGetPushSettings()
-			{ 
+			{
 				ApiKey = mygetApiKey,
 				Source = MYGET_PUSH_URL
 			});
-		else
-			Information("Nothing to publish from this run.");
+		}
+
+		//if (isProductionRelease)
+		//{
+		//	const string NUGET_PUSH_URL = "https://api.nuget.org/v3/index.json";
+		//	var nugetApiKey = EnvironmentVariable("NUGET_API_KEY");
+
+		//	NuGetPush(package, new NuGetPushSettings()
+		//	{
+		//		ApiKey = nugetApiKey,
+		//		Source = NUGET_PUSH_URL
+		//	});
+		//}
 	});
 
 //////////////////////////////////////////////////////////////////////
