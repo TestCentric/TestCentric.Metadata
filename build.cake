@@ -176,18 +176,18 @@ Task("Publish")
 			});
 		}
 
-		//if (isProductionRelease)
-		//{
-		//	const string NUGET_PUSH_URL = "https://api.nuget.org/v3/index.json";
-		//	var nugetApiKey = EnvironmentVariable("NUGET_API_KEY");
+        if (isProductionRelease)
+        {
+            const string NUGET_PUSH_URL = "https://api.nuget.org/v3/index.json";
+            var nugetApiKey = EnvironmentVariable("NUGET_API_KEY");
 
-		//	NuGetPush(package, new NuGetPushSettings()
-		//	{
-		//		ApiKey = nugetApiKey,
-		//		Source = NUGET_PUSH_URL
-		//	});
-		//}
-	});
+            NuGetPush(package, new NuGetPushSettings()
+            {
+                ApiKey = nugetApiKey,
+                Source = NUGET_PUSH_URL
+            });
+        }
+    });
 
 //////////////////////////////////////////////////////////////////////
 // TASK TARGETS
