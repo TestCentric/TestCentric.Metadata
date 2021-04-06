@@ -8,7 +8,8 @@
 var SOLUTION_FILE = "TestCentric.Metadata.sln";
 var GITHUB_SITE = "https://github.com/TestCentric/TestCentric.Metadata";
 var NUGET_ID = "TestCentric.Metadata";
-var VERSION = "1.7.0";
+var DEFAULT_VERSION = "1.7.0";
+var MAIN_BRANCH = "main";
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS  
@@ -22,7 +23,7 @@ var configuration = Argument("configuration", "Release");
 //////////////////////////////////////////////////////////////////////
 
 var dbgSuffix = configuration == "Debug" ? "-dbg" : "";
-var packageVersion = VERSION + dbgSuffix;
+var packageVersion = DEFAULT_VERSION + dbgSuffix;
 
 if (BuildSystem.IsRunningOnAppVeyor)
 {
@@ -38,9 +39,9 @@ if (BuildSystem.IsRunningOnAppVeyor)
 		var branch = AppVeyor.Environment.Repository.Branch;
 		var isPullRequest = AppVeyor.Environment.PullRequest.IsPullRequest;
 
-		if (branch == "master" && !isPullRequest)
+		if (branch == MAIN_BRANCH && !isPullRequest)
 		{
-			packageVersion = VERSION + "-dev-" + buildNumber + dbgSuffix;
+			packageVersion = DEFAULT_VERSION + "-dev-" + buildNumber + dbgSuffix;
 		}
 		else
 		{
@@ -57,7 +58,7 @@ if (BuildSystem.IsRunningOnAppVeyor)
 
 			suffix = suffix.Replace(".", "");
 
-			packageVersion = VERSION + suffix;
+			packageVersion = DEFAULT_VERSION + suffix;
 		}
 	}
 
@@ -133,7 +134,7 @@ Task("Package")
 	{
         NuGetPack(NUGET_DIR + NUGET_ID + ".nuspec", new NuGetPackSettings()
         {
-            Version = VERSION,
+            Version = DEFAULT_VERSION,
             OutputDirectory = PACKAGE_DIR,
             NoPackageAnalysis = true
         });
