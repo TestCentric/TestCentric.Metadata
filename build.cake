@@ -158,7 +158,7 @@ Task("Publish")
 	{
 		var package = PACKAGE_DIR + NUGET_ID + "." + packageVersion + ".nupkg";
 
-		bool isProductionRelease = packageVersion.Contains("-");
+		bool isProductionRelease = !packageVersion.Contains("-");
 		bool isDevRelease = packageVersion.Contains("-dev-");
 
 		if (!isDevRelease && !isProductionRelease)
