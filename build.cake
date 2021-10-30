@@ -7,7 +7,7 @@
 var SOLUTION_FILE = "TestCentric.Metadata.sln";
 var GITHUB_SITE = "https://github.com/TestCentric/TestCentric.Metadata";
 var NUGET_ID = "TestCentric.Metadata";
-var DEFAULT_VERSION = "1.7.0";
+var DEFAULT_VERSION = "1.7.1";
 var MAIN_BRANCH = "main";
 
 //////////////////////////////////////////////////////////////////////
@@ -125,24 +125,14 @@ Task("Build")
 	.IsDependentOn("RestorePackages")
     .Does(() =>
 	{
-		if (IsRunningOnWindows())
-		{
-			MSBuild(SOLUTION_FILE, new MSBuildSettings()
-				.SetConfiguration(Configuration)
-				.SetMSBuildPlatform(MSBuildPlatform.Automatic)
-				.SetVerbosity(Verbosity.Minimal)
-				.SetNodeReuse(false)
-				.SetPlatformTarget(PlatformTarget.MSIL)
-			);
-		}
-		else
-		{
-			XBuild(SOLUTION_FILE, new XBuildSettings()
-				.WithTarget("Build")
-				.WithProperty("Configuration", Configuration)
-				.SetVerbosity(Verbosity.Minimal)
-			);
-		}
+		MSBuild(SOLUTION_FILE, new MSBuildSettings()
+			.SetConfiguration(Configuration)
+			.SetMSBuildPlatform(MSBuildPlatform.Automatic)
+			.SetVerbosity(Verbosity.Minimal)
+			.SetNodeReuse(false)
+			.SetPlatformTarget(PlatformTarget.MSIL)
+			.WithProperty("Version", PackageVersion)
+		);
 	});
 
 //////////////////////////////////////////////////////////////////////
@@ -218,6 +208,10 @@ Task("AppVeyor")
 	.IsDependentOn("Package")
 	.IsDependentOn("PublishToMyGet")
 	.IsDependentOn("CreateProductionRelease");
+
+Task("Full")
+	.IsDependentOn("Build")
+	.IsDependentOn("Package");
 
 Task("Default")
     .IsDependentOn("Build");
