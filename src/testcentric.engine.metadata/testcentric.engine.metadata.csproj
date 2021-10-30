@@ -1,15 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+
   <PropertyGroup>
 	  <RootNamespace>Mono.Cecil</RootNamespace>
     <TargetFrameworks>net20;net40;netstandard1.6;netstandard2.0</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>testcentric.snk</AssemblyOriginatorKeyFile>
     <OutputPath>..\..\bin\$(Configuration)\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;TESTCENTRIC</DefineConstants>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net20|AnyCPU'">
+    <DefineConstants>TESTCENTRIC</DefineConstants>
+    <Title>TestCentric.Engine.Metadata</Title>
+    <Description>Readonly metadata access based on Mono.Cecil code</Description>
+    <Copyright>Copyright (c) 2021 Charlie Poole</Copyright>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
 </Project>
