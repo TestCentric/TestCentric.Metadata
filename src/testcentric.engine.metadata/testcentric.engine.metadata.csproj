@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
 
   <PropertyGroup>
-	  <RootNamespace>Mono.Cecil</RootNamespace>
+	<RootNamespace>Mono.Cecil</RootNamespace>
     <TargetFrameworks>net20;net40;netstandard1.6;netstandard2.0</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>testcentric.snk</AssemblyOriginatorKeyFile>
     <OutputPath>..\..\bin\$(Configuration)\</OutputPath>
     <DefineConstants>TESTCENTRIC</DefineConstants>
-    <Title>TestCentric.Engine.Metadata</Title>
+    <Title>TestCentric.Metadata</Title>
     <Description>Readonly metadata access based on Mono.Cecil code</Description>
     <Copyright>Copyright (c) 2021 Charlie Poole</Copyright>
     <DebugType>full</DebugType>
