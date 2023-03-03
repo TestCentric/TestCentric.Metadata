@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Mono.Cecil
+namespace TestCentric.Metadata
 {
     /// <summary>
     /// Extension methods that make it easier to work with Mono.Cecil.
