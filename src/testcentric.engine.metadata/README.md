@@ -9,7 +9,7 @@ Of course, others are welcome to use it if it meets their needs.
 
 ## Why not just use Mono.Cecil?
 
-Orinally, we used Mono.Cecil. However, this presents a few problems.
+Originally, we used Mono.Cecil. However, this presents a few problems.
 
 1. When testing an application, which uses Mono.Cecil itself, a conflict
    of versions can easily arise.
@@ -28,6 +28,9 @@ Orinally, we used Mono.Cecil. However, this presents a few problems.
 All of Mono.Cecil's ability to modify assemblies has been omitted,
 since it is not required by TestCentric. All analysis of the code
 itself is also omitted for the same reason.
+
+The namespaces have been changed in order to avoid conflict when
+the system under test uses Mono.Cecil itself.
 
 In general, the intended use of this assembly is to examine a file
 in order to determine the proper runtime environment for loading and
