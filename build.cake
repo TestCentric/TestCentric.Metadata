@@ -1,4 +1,4 @@
-#tool nuget:?package=GitReleaseManager&version=0.11.0
+#tool nuget:?package=GitReleaseManager&version=0.12.1
 
 //////////////////////////////////////////////////////////////////////
 // PROJECT-SPECIFIC
@@ -7,7 +7,7 @@
 var SOLUTION_FILE = "TestCentric.Metadata.sln";
 var GITHUB_SITE = "https://github.com/TestCentric/TestCentric.Metadata";
 var NUGET_ID = "TestCentric.Metadata";
-var DEFAULT_VERSION = "1.7.1";
+var DEFAULT_VERSION = "2.0.0";
 var MAIN_BRANCH = "main";
 
 //////////////////////////////////////////////////////////////////////
