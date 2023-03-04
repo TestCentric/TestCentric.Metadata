@@ -1,75 +1,67 @@
+#tool nuget:?package=GitVersion.CommandLine&version=5.6.3
 #tool nuget:?package=GitReleaseManager&version=0.12.1
+
+#load ./versioning.cake
+
+//////////////////////////////////////////////////////////////////////
+// ARGUMENTS
+//
+// Arguments taking a value may use  `=` or space to separate the name
+// from the value. Examples of each are shown here.
+//
+// --target=TARGET
+// -t Target
+//
+//    The name of the task to be run, e.g. Test. Defaults to Build.
+//
+// --configuration=CONFIG
+// -c CONFIG
+//
+//     The name of the configuration to build, test and/or package, e.g. Debug.
+//     Defaults to Release.
+//
+// --packageVersion=VERSION
+// --package=VERSION
+//     Specifies the full package version, including any pre-release
+//     suffix. This version is used directly instead of the default
+//     version from the script or that calculated by GitVersion.
+//     Note that all other versions (AssemblyVersion, etc.) are
+//     derived from the package version.
+//
+//     NOTE: We can't use "version" since that's an argument to Cake itself.
+//
+//////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////
 // PROJECT-SPECIFIC
 //////////////////////////////////////////////////////////////////////
 
 var SOLUTION_FILE = "TestCentric.Metadata.sln";
-var GITHUB_SITE = "https://github.com/TestCentric/TestCentric.Metadata";
 var NUGET_ID = "TestCentric.Metadata";
-var DEFAULT_VERSION = "2.0.0";
-var MAIN_BRANCH = "main";
+
+string Configuration = Argument("configuration", Argument("c", "Release"));
+
+string PackageVersion;
+bool IsProductionRelease;
+bool IsDevelopmentRelease;
 
 //////////////////////////////////////////////////////////////////////
-// ARGUMENTS  
+// SETUP
 //////////////////////////////////////////////////////////////////////
 
-var Configuration = Argument("configuration", "Release");
-var PackageVersion = Argument("packageVersion", DEFAULT_VERSION);
-
-//////////////////////////////////////////////////////////////////////
-// SET PACKAGE VERSION
-//////////////////////////////////////////////////////////////////////
-
-var dash = PackageVersion.IndexOf('-');
-var BaseVersion = dash > 0 
-	? PackageVersion.Substring(0, dash)
-	: PackageVersion;
-
-// Any prerelease label in packageVersion is ignored on AppVeyor
-// where the baseVersion is used to calculate a new packageVersion.
-if (BuildSystem.IsRunningOnAppVeyor)
+Setup((context) =>
 {
-	var tag = AppVeyor.Environment.Repository.Tag;
+	var buildVersion = new BuildVersion(context);
+	
+	PackageVersion = buildVersion.PackageVersion;
+	IsProductionRelease = !PackageVersion.Contains("-");
+	IsDevelopmentRelease = PackageVersion.Contains("-dev-");
 
-	if (tag.IsTag)
-	{
-		// A tag is used directly as the package Version.
-		// It may include a prerelease lable like beta1.
-		PackageVersion = tag.Name;
-	}
-	else
-	{
-		var buildNumber = AppVeyor.Environment.Build.Number.ToString("00000");
-		var branch = AppVeyor.Environment.Repository.Branch;
-		var isPullRequest = AppVeyor.Environment.PullRequest.IsPullRequest;
+	if (BuildSystem.IsRunningOnAppVeyor)
+		AppVeyor.UpdateBuildVersion(PackageVersion + "-" + AppVeyor.Environment.Build.Number);
 
-		if (branch == MAIN_BRANCH && !isPullRequest)
-		{
-			// When merging to main or pushing directly, use dev label
-			PackageVersion = BaseVersion + "-dev-" + buildNumber;
-		}
-		else
-		{
-			var suffix = "-ci-" + buildNumber;
-
-			if (isPullRequest)
-				suffix += "-pr-" + AppVeyor.Environment.PullRequest.Number;
-			else
-				suffix += "-" + branch;
-
-			// Nuget limits "special version part" to 20 chars. Add one for the hyphen.
-			if (suffix.Length > 21)
-				suffix = suffix.Substring(0, 21);
-
-			suffix = suffix.Replace(".", "");
-
-			PackageVersion = BaseVersion + suffix;
-		}
-	}
-
-	AppVeyor.UpdateBuildVersion(PackageVersion);
-}
+    Information($"Building {Configuration} version {PackageVersion} of TestCentric.Metadata.");
+});
 
 //////////////////////////////////////////////////////////////////////
 // DEFINE CONSTANTS AND RUN SETTINGS
@@ -83,8 +75,6 @@ var NUGET_DIR = PROJECT_DIR + "nuget/";
 
 // Publishing
 var PackageName = NUGET_ID + "." + PackageVersion + ".nupkg";
-bool IsProductionRelease = !PackageVersion.Contains("-");
-bool IsDevelopmentRelease = PackageVersion.Contains("-dev-");
 
 const string MYGET_PUSH_URL = "https://www.myget.org/F/testcentric/api/v2";
 var MYGET_API_KEY = EnvironmentVariable("MYGET_API_KEY");
@@ -94,7 +84,7 @@ var NUGET_API_KEY = EnvironmentVariable("NUGET_API_KEY");
 
 const string GITHUB_OWNER = "TestCentric";
 const string GITHUB_REPO = "TestCentric.Metadata";
-var GITHUB_ACCESS_TOKEN = EnvironmentVariable("GITHUB_ACCESS_TOKEN");
+readonly string GITHUB_ACCESS_TOKEN = EnvironmentVariable("GITHUB_ACCESS_TOKEN");
 
 //////////////////////////////////////////////////////////////////////
 // CLEAN
@@ -103,7 +93,11 @@ var GITHUB_ACCESS_TOKEN = EnvironmentVariable("GITHUB_ACCESS_TOKEN");
 Task("Clean")
     .Does(() =>
 	{
+		Information("Cleaning " + BIN_DIR);
 		CleanDirectory(BIN_DIR);
+
+        Information("Cleaning Package Directory");
+        CleanDirectory(PACKAGE_DIR);
 	});
 
 //////////////////////////////////////////////////////////////////////
@@ -209,10 +203,6 @@ Task("AppVeyor")
 	.IsDependentOn("PublishToMyGet")
 	.IsDependentOn("CreateProductionRelease");
 
-Task("Full")
-	.IsDependentOn("Build")
-	.IsDependentOn("Package");
-
 Task("Default")
     .IsDependentOn("Build");
 
@@ -220,4 +210,4 @@ Task("Default")
 // EXECUTION
 //////////////////////////////////////////////////////////////////////
 
-RunTarget(Argument("target", "Default"));
+RunTarget(Argument("target", Argument("t", "Default")));
