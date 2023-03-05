@@ -13,12 +13,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LICENSE = LICENSE
 		NOTICE.md = NOTICE.md
 		README.md = README.md
+		versioning.cake = versioning.cake
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{A6EB94CC-A287-4D4E-9D5C-FBA337E29008}"
 	ProjectSection(SolutionItems) = preProject
 		nuget\TestCentric.Metadata.nuspec = nuget\TestCentric.Metadata.nuspec
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testcentric.engine.metadata.tests", "src\testcentric.engine.metadata.tests\testcentric.engine.metadata.tests.csproj", "{89449F96-70D5-46CF-80F0-2577DB0BAEC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +33,10 @@ Global
 		{DE3BDBAD-F893-4E17-9B24-FF12FA191A7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE3BDBAD-F893-4E17-9B24-FF12FA191A7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE3BDBAD-F893-4E17-9B24-FF12FA191A7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89449F96-70D5-46CF-80F0-2577DB0BAEC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89449F96-70D5-46CF-80F0-2577DB0BAEC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89449F96-70D5-46CF-80F0-2577DB0BAEC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89449F96-70D5-46CF-80F0-2577DB0BAEC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

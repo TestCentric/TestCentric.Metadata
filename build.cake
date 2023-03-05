@@ -70,8 +70,14 @@ Setup((context) =>
 // Directories
 var PROJECT_DIR = Context.Environment.WorkingDirectory.FullPath + "/";
 var BIN_DIR = PROJECT_DIR + "bin/" + Configuration + "/";
+var TEST_DIR = BIN_DIR + "tests/";
 var PACKAGE_DIR = PROJECT_DIR + "package/";
 var NUGET_DIR = PROJECT_DIR + "nuget/";
+
+// Testing
+var NETFX_TEST_ASSEMBLY = "testcentric.engine.metadata.tests.exe";
+var NETCORE_TEST_ASSEMBLY = "testcentric.engine.metadata.tests.dll";
+var TEST_RUNTIMES = new [] {"net35", "net40", "net45", "netcoreapp2.1", "netcoreapp3.1", "net5.0", "net6.0", "net7.0"};
 
 // Publishing
 var PackageName = NUGET_ID + "." + PackageVersion + ".nupkg";
@@ -127,6 +133,35 @@ Task("Build")
 			.SetPlatformTarget(PlatformTarget.MSIL)
 			.WithProperty("Version", PackageVersion)
 		);
+	});
+
+//////////////////////////////////////////////////////////////////////
+// TESTING
+//////////////////////////////////////////////////////////////////////
+
+Task("Test")
+	.IsDependentOn("Build")
+	.Does(() =>
+	{
+		var errors = new List<string>();
+
+		foreach (var runtime in TEST_RUNTIMES)
+		{
+			Console.WriteLine("\n----------------------------------------");
+			Console.WriteLine("TESTING UNDER " + runtime.ToUpper());
+			Console.WriteLine("----------------------------------------\r\n");
+
+			bool isNetFX = runtime.StartsWith("net2") || runtime.StartsWith("net3") || runtime.StartsWith("net4");
+			int rc = isNetFX
+				? StartProcess($"{TEST_DIR}{runtime}/{NETFX_TEST_ASSEMBLY}")
+				: StartProcess("dotnet", $"{TEST_DIR}{runtime}/{NETCORE_TEST_ASSEMBLY}");
+
+			if (rc != 0)
+				errors.Add($"Testing under {runtime}, rc={rc}");
+		}
+
+		if (errors.Count > 0)
+			throw new Exception("\r\n" + string.Join("\r\n", errors));
 	});
 
 //////////////////////////////////////////////////////////////////////
@@ -198,10 +233,14 @@ Task("CreateProductionRelease")
 //////////////////////////////////////////////////////////////////////
 
 Task("AppVeyor")
-	.IsDependentOn("Build")
-	.IsDependentOn("Package")
+	.IsDependentOn("BuildTestAndPackage")
 	.IsDependentOn("PublishToMyGet")
 	.IsDependentOn("CreateProductionRelease");
+
+Task("BuildTestAndPackage")
+	.IsDependentOn("Build")
+	.IsDependentOn("Test")
+	.IsDependentOn("Package");
 
 Task("Default")
     .IsDependentOn("Build");
