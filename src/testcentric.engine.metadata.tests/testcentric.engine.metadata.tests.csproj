@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net35;net40;net45;netcoreapp2.1;netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
+	<CheckEolTargetFramework>false</CheckEolTargetFramework>
+	<RootNamespace>TestCentric.Metadata</RootNamespace>
+    <OutputType>Exe</OutputType>
+	<OutputPath>..\..\bin\$(Configuration)\tests\</OutputPath>
+	<AssemblyTitle>TestCentric.Metadata Tests</AssemblyTitle>
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="NUnit" Version="3.13.3" />
+	  <PackageReference Include="NUnitLite" Version="3.13.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\testcentric.engine.metadata\testcentric.engine.metadata.csproj" />
+  </ItemGroup>
+
+</Project>
