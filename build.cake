@@ -42,6 +42,7 @@ var NUGET_ID = "TestCentric.Metadata";
 string Configuration = Argument("configuration", Argument("c", "Release"));
 
 string PackageVersion;
+string PackageName;
 bool IsProductionRelease;
 bool IsDevelopmentRelease;
 
@@ -54,8 +55,9 @@ Setup((context) =>
 	var buildVersion = new BuildVersion(context);
 	
 	PackageVersion = buildVersion.PackageVersion;
+	PackageName = NUGET_ID + "." + PackageVersion + ".nupkg";
 	IsProductionRelease = !PackageVersion.Contains("-");
-	IsDevelopmentRelease = PackageVersion.Contains("-dev-");
+	IsDevelopmentRelease = PackageVersion.Contains("-dev");
 
 	if (BuildSystem.IsRunningOnAppVeyor)
 		AppVeyor.UpdateBuildVersion(PackageVersion + "-" + AppVeyor.Environment.Build.Number);
@@ -78,9 +80,6 @@ var NUGET_DIR = PROJECT_DIR + "nuget/";
 var NETFX_TEST_ASSEMBLY = "testcentric.engine.metadata.tests.exe";
 var NETCORE_TEST_ASSEMBLY = "testcentric.engine.metadata.tests.dll";
 var TEST_RUNTIMES = new [] {"net35", "net40", "net45", "netcoreapp2.1", "netcoreapp3.1", "net5.0", "net6.0", "net7.0"};
-
-// Publishing
-var PackageName = NUGET_ID + "." + PackageVersion + ".nupkg";
 
 const string MYGET_PUSH_URL = "https://www.myget.org/F/testcentric/api/v2";
 var MYGET_API_KEY = EnvironmentVariable("MYGET_API_KEY");
@@ -185,17 +184,20 @@ Task("Package")
 //////////////////////////////////////////////////////////////////////
 
 Task("PublishToMyGet")
-	.WithCriteria(IsProductionRelease || IsDevelopmentRelease)
-	.IsDependentOn("Package")
 	.Does(() =>
 	{
-		Information($"Publishing {PackageName} to MyGet");
-
-		NuGetPush(PACKAGE_DIR + PackageName, new NuGetPushSettings()
+		if (IsProductionRelease || IsDevelopmentRelease)
 		{
-			ApiKey = MYGET_API_KEY,
-			Source = MYGET_PUSH_URL
-		});
+			Information($"Publishing {PackageName} to MyGet");
+
+			NuGetPush(PACKAGE_DIR + PackageName, new NuGetPushSettings()
+			{
+				ApiKey = MYGET_API_KEY,
+				Source = MYGET_PUSH_URL
+			});
+		}
+		else
+			Information($"Skipping - {PackageName} is not a development or production release");
 	});
 
 //////////////////////////////////////////////////////////////////////
@@ -203,29 +205,33 @@ Task("PublishToMyGet")
 //////////////////////////////////////////////////////////////////////
 
 Task("CreateProductionRelease")
-	.WithCriteria(IsProductionRelease)
 	.Does(() =>
 	{
-		Information($"Publishing {PackageName} to NuGet");
-
-		NuGetPush(PACKAGE_DIR + PackageName, new NuGetPushSettings()
+		if (IsProductionRelease)
 		{
-			ApiKey = NUGET_API_KEY,
-			Source = NUGET_PUSH_URL
-		});
+			Information($"Publishing {PackageName} to NuGet");
 
-		Information($"Publishing release {PackageVersion} on GitHub");
-
-		GitReleaseManagerCreate(GITHUB_ACCESS_TOKEN, GITHUB_OWNER, GITHUB_REPO,
-			new GitReleaseManagerCreateSettings()
+			NuGetPush(PACKAGE_DIR + PackageName, new NuGetPushSettings()
 			{
-				Name = $"TestCentric.Metadata {PackageVersion}",
-				Milestone = PackageVersion
+				ApiKey = NUGET_API_KEY,
+				Source = NUGET_PUSH_URL
 			});
 
-		GitReleaseManagerAddAssets(GITHUB_ACCESS_TOKEN, GITHUB_OWNER, GITHUB_REPO,
-			PackageVersion, PACKAGE_DIR + PackageName);
-		GitReleaseManagerClose(GITHUB_ACCESS_TOKEN, GITHUB_OWNER, GITHUB_REPO, PackageVersion);
+			Information($"Publishing release {PackageVersion} on GitHub");
+
+			GitReleaseManagerCreate(GITHUB_ACCESS_TOKEN, GITHUB_OWNER, GITHUB_REPO,
+				new GitReleaseManagerCreateSettings()
+				{
+					Name = $"TestCentric.Metadata {PackageVersion}",
+					Milestone = PackageVersion
+				});
+
+			GitReleaseManagerAddAssets(GITHUB_ACCESS_TOKEN, GITHUB_OWNER, GITHUB_REPO,
+				PackageVersion, PACKAGE_DIR + PackageName);
+			GitReleaseManagerClose(GITHUB_ACCESS_TOKEN, GITHUB_OWNER, GITHUB_REPO, PackageVersion);
+		}
+		else
+			Information($"Skipping - {PackageName} is not a production release");
 	});
 
 //////////////////////////////////////////////////////////////////////
