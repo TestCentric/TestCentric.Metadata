@@ -46,10 +46,8 @@ namespace TestCentric.Metadata
         {
 #if NET35
             Assert.That(_assemblyDef.GetFrameworkName(), Is.EqualTo(null));
-#elif NET40
-            Assert.That(_assemblyDef.GetFrameworkName(), Is.EqualTo(".NETFramework,Version=v4.0"));
-#elif NET45
-            Assert.That(_assemblyDef.GetFrameworkName(), Is.EqualTo(".NETFramework,Version=v4.5"));
+#elif NET481
+            Assert.That(_assemblyDef.GetFrameworkName(), Is.EqualTo(".NETFramework,Version=v4.8.1"));
 #elif NETCOREAPP2_1
             Assert.That(_assemblyDef.GetFrameworkName(), Is.EqualTo(".NETCoreApp,Version=v2.1"));
 #elif NETCOREAPP3_1
@@ -60,6 +58,8 @@ namespace TestCentric.Metadata
             Assert.That(_assemblyDef.GetFrameworkName(), Is.EqualTo(".NETCoreApp,Version=v6.0"));
 #elif NET7_0
             Assert.That(_assemblyDef.GetFrameworkName(), Is.EqualTo(".NETCoreApp,Version=v7.0"));
+#elif NET8_0
+            Assert.That(_assemblyDef.GetFrameworkName(), Is.EqualTo(".NETCoreApp,Version=v8.0"));
 #else
             Assert.Fail($"Untested target runtime: {_assemblyDef.GetFrameworkName()}");
 #endif

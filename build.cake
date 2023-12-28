@@ -26,14 +26,10 @@ BuildSettings.Packages.Add(new NuGetPackage(
 		HasFiles(
 			"LICENSE", "README.md", "NOTICE.md", "testcentric.png",
 			"lib/net20/TestCentric.Metadata.dll",
-			"lib/net40/TestCentric.Metadata.dll",
-			"lib/netstandard1.6/TestCentric.Metadata.dll",
 			"lib/netstandard2.0/TestCentric.Metadata.dll") },
 	symbols: new PackageCheck[] {
 		HasFiles(
 			"lib/net20/TestCentric.Metadata.pdb",
-			"lib/net40/TestCentric.Metadata.pdb",
-			"lib/netstandard1.6/TestCentric.Metadata.pdb",
 			"lib/netstandard2.0/TestCentric.Metadata.pdb") }));
 
 //////////////////////////////////////////////////////////////////////
