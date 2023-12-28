@@ -20,17 +20,17 @@
     <title>TestCentric Metadata Assembly</title>
   </metadata>
   <files>
-	<file src="../LICENSE" />
-	<file src="../NOTICE.md" />
-	<file src="../README.md" />
-	<file src="../testcentric.png" />
-    <file src="../bin/Release/net20/testcentric.engine.metadata.dll" target="lib/net20" />
-    <file src="../bin/Release/net20/testcentric.engine.metadata.pdb" target="lib/net20" />
-    <file src="../bin/Release/net40/testcentric.engine.metadata.dll" target="lib/net40" />
-    <file src="../bin/Release/net40/testcentric.engine.metadata.pdb" target="lib/net40" />
-    <file src="../bin/Release/netstandard1.6/testcentric.engine.metadata.dll" target="lib/netstandard1.6" />
-    <file src="../bin/Release/netstandard1.6/testcentric.engine.metadata.pdb" target="lib/netstandard1.6" />
-    <file src="../bin/Release/netstandard2.0/testcentric.engine.metadata.dll" target="lib/netstandard2.0" />
-    <file src="../bin/Release/netstandard2.0/testcentric.engine.metadata.pdb" target="lib/netstandard2.0" />
+	<file src="../../LICENSE" />
+	<file src="../../NOTICE.md" />
+	<file src="../../README.md" />
+	<file src="../../testcentric.png" />
+    <file src="net20/TestCentric.Metadata.dll" target="lib/net20" />
+    <file src="net20/TestCentric.Metadata.pdb" target="lib/net20" />
+    <file src="net40/TestCentric.Metadata.dll" target="lib/net40" />
+    <file src="net40/TestCentric.Metadata.pdb" target="lib/net40" />
+    <file src="netstandard1.6/TestCentric.Metadata.dll" target="lib/netstandard1.6" />
+    <file src="netstandard1.6/TestCentric.Metadata.pdb" target="lib/netstandard1.6" />
+    <file src="netstandard2.0/TestCentric.Metadata.dll" target="lib/netstandard2.0" />
+    <file src="netstandard2.0/TestCentric.Metadata.pdb" target="lib/netstandard2.0" />
   </files>
 </package>

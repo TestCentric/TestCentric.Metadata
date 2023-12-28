@@ -13,6 +13,6 @@ environment:
   MYGET_API_KEY:
     secure: wtAvJDVl2tfwiVcyLExFHLvZVfUWiQRHsfdHBFCNEATeCHo1Nd8JP642PfY8xhji
   NUGET_API_KEY:
-    secure: 6lmjTFOrs5IZbOR70rmQNSOuFMPKGxA88/TuGAm1X3mspgj5bn1rnbN/iqTIC2Le
+    secure: vwKyDjnG0Ghg8JnlNgwd4DH525DAvyGkrtOQmvCxgJx74BENK/vxoCwxCL7y0YIE
   GITHUB_ACCESS_TOKEN:
     secure: RJ6sKRBZzwXz8JQvj8zcp45mkHNDad1UlvmfCsiVx63V9/pXHcm2Y2Lg/G/Vyhlz
