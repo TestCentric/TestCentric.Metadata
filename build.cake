@@ -21,7 +21,7 @@ BuildSettings.Initialize(
 
 BuildSettings.Packages.Add(new NuGetPackage(
 	id: "TestCentric.Metadata",
-	source: "nuget/TestCentric.Metadata.nuspec",
+	source: "src/TestCentric.Metadata/TestCentric.Metadata.csproj",
 	checks: new PackageCheck[] {
 		HasFiles(
 			"LICENSE", "README.md", "NOTICE.md", "testcentric.png",
