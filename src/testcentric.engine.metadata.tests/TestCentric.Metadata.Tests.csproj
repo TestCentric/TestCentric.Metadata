@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\testcentric.engine.metadata\testcentric.engine.metadata.csproj" />
+    <ProjectReference Include="..\testcentric.engine.metadata\TestCentric.Metadata.csproj" />
   </ItemGroup>
 
 </Project>

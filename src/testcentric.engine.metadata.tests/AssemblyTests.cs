@@ -1,4 +1,9 @@
-﻿using NUnit.Framework;
+﻿// ***********************************************************************
+// Copyright (c) Charlie Poole and TestCentric contributors.
+// Licensed under the MIT License. See LICENSE file in root directory.
+// ***********************************************************************
+
+using NUnit.Framework;
 using System;
 using System.Reflection;
 
@@ -30,7 +35,7 @@ namespace TestCentric.Metadata
         }
 
         [TestCase("nunit.framework")]
-        [TestCase("testcentric.engine.metadata")]
+        [TestCase("TestCentric.Metadata")]
         public void HasAssemblyReference(string name)
         {
             Assert.That(HasReferenceTo(name));
