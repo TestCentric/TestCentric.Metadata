@@ -4,15 +4,15 @@ build_script:
   - ps: .\build.ps1 --target=AppVeyor --Configuration="Release"
   
 # disable built-in tests.
-test: off
+test: false
 
 artifacts:
 - path: package\*.nupkg
 
 environment:
-  MYGET_API_KEY:
+  TESTCENTRIC_MYGET_API_KEY:
     secure: wtAvJDVl2tfwiVcyLExFHLvZVfUWiQRHsfdHBFCNEATeCHo1Nd8JP642PfY8xhji
-  NUGET_API_KEY:
+  TESTCENTRIC_NUGET_API_KEY:
     secure: vwKyDjnG0Ghg8JnlNgwd4DH525DAvyGkrtOQmvCxgJx74BENK/vxoCwxCL7y0YIE
   GITHUB_ACCESS_TOKEN:
     secure: RJ6sKRBZzwXz8JQvj8zcp45mkHNDad1UlvmfCsiVx63V9/pXHcm2Y2Lg/G/Vyhlz
