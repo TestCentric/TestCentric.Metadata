@@ -302,6 +302,9 @@ paket-files/
 # CodeRush personal settings
 .cr/personal
 
+# TestCentric packaging folder
+packaging/
+
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc

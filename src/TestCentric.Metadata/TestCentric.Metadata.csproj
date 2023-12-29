@@ -30,6 +30,22 @@
 		<PackageOutputPath>..\..\packaging</PackageOutputPath>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net20|AnyCPU'">
+	  <DebugType>portable</DebugType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
+	  <DebugType>portable</DebugType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net20|AnyCPU'">
+	  <DebugType>portable</DebugType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+	  <DebugType>portable</DebugType>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<None Include="..\..\LICENSE" Pack="true" PackagePath="\" Link="LICENSE.txt" />
 		<None Include="..\..\README.md" Pack="true" PackagePath="\" Link="README.md" />
