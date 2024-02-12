@@ -7,13 +7,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
 		build.cake = build.cake
+		build.cmd = build.cmd
+		build.ps1 = build.ps1
+		build.sh = build.sh
 		GitReleaseManager.yaml = GitReleaseManager.yaml
 		GitVersion.yml = GitVersion.yml
 		LICENSE = LICENSE
 		NOTICE.md = NOTICE.md
 		NuGet.config = NuGet.config
 		README.md = README.md
-		versioning.cake = versioning.cake
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestCentric.Metadata", "src\TestCentric.Metadata\TestCentric.Metadata.csproj", "{DF453857-44BB-44CF-BEC5-47F8C83335E5}"
@@ -37,9 +39,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{DF453857-44BB-44CF-BEC5-47F8C83335E5} = {96693C7E-4547-491A-BF05-865897ACF46C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AEFCDA38-CDDF-4B8F-A199-20E0FB2E007C}
