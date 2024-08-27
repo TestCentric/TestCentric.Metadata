@@ -1,4 +1,4 @@
-next-version: 3.0.2
+next-version: 3.0.3
 mode: ContinuousDelivery
 legacy-semver-padding: 5
 build-metadata-padding: 5
