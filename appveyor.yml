@@ -1,7 +1,7 @@
 image: Visual Studio 2022
 
 build_script: 
-  - ps: .\build.ps1 --target=AppVeyor --Configuration="Release"
+  - ps: .\build.ps1 --target=ContinuousIntegration --Configuration="Release"
   
 # disable built-in tests.
 test: false
