@@ -1,5 +1,5 @@
 // Load the recipe
-#load nuget:?package=TestCentric.Cake.Recipe&version=1.3.1
+#load nuget:?package=TestCentric.Cake.Recipe&version=1.3.2
 // Comment out above line and uncomment below for local tests of recipe changes
 //#load ../TestCentric.Cake.Recipe/recipe/*.cake
 
@@ -12,7 +12,6 @@ BuildSettings.Initialize(
 	title: "TestCentric Metadata",
 	solutionFile: "TestCentric.Metadata.sln",
 	githubRepository: "TestCentric.Metadata",
-	unitTests: "**/Tests.exe",
 	// Most files here are from Mono.Cecil, so we don't change their header
 	suppressHeaderCheck: true );
 

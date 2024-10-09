@@ -193,7 +193,7 @@ namespace TestCentric.Metadata.PE {
 			cli = ReadDataDirectory ();
 
 			if (cli.IsZero)
-				throw new BadImageFormatException ();
+				throw new BadImageFormatException ("Not a managed assembly");
 
 			// Reserved				8
 			Advance (8);
