@@ -1,0 +1,11 @@
+﻿name: TestCentric.Metadata.CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+
+jobs:
+  ContinuousIntegration:
+    uses: TestCentric/TestCentric.WorkFlows/.github/workflows/testcentric-ci.yml@main
+    secrets: inherit

@@ -22,6 +22,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestCentric.Metadata", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestCentric.Metadata.Tests", "src\TestCentric.Metadata.tests\TestCentric.Metadata.Tests.csproj", "{5D6A67A0-B74C-48F1-8FCC-E85BF727F0B3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{C53AB6C5-362A-4789-B5B0-01530E9B40F1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{F6358310-53F8-4687-9C77-F61BEAEC6724}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\testcentric-metadata.ci.yml = .github\workflows\testcentric-metadata.ci.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +46,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C53AB6C5-362A-4789-B5B0-01530E9B40F1} = {96693C7E-4547-491A-BF05-865897ACF46C}
+		{F6358310-53F8-4687-9C77-F61BEAEC6724} = {C53AB6C5-362A-4789-B5B0-01530E9B40F1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AEFCDA38-CDDF-4B8F-A199-20E0FB2E007C}
