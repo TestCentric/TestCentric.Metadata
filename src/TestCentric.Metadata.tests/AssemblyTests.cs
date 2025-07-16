@@ -41,7 +41,7 @@ namespace TestCentric.Metadata
             Assert.That(HasReferenceTo(name));
         }
 
-        [Test]
+        [Test, Obsolete]
         public void GetFrameworkName()
         {
 #if NET35
@@ -60,6 +60,38 @@ namespace TestCentric.Metadata
             Assert.That(_assemblyDef.GetFrameworkName(), Is.EqualTo(".NETCoreApp,Version=v7.0"));
 #elif NET8_0
             Assert.That(_assemblyDef.GetFrameworkName(), Is.EqualTo(".NETCoreApp,Version=v8.0"));
+#else
+            Assert.Fail($"Untested target runtime: {_assemblyDef.GetFrameworkName()}");
+#endif
+        }
+
+        [Test]
+        public void TryGetFrameworkName()
+        {
+            string frameworkName;
+#if NET35
+            Assert.That(_assemblyDef.TryGetFrameworkName(out frameworkName), Is.False);
+#elif NET481
+            Assert.That(_assemblyDef.TryGetFrameworkName(out frameworkName), Is.True);
+            Assert.That(frameworkName, Is.EqualTo(".NETFramework,Version=v4.8.1"));
+#elif NETCOREAPP2_1
+            Assert.That(_assemblyDef.TryGetFrameworkName(out frameworkName), Is.True);
+            Assert.That(frameworkName, Is.EqualTo(".NETCoreApp,Version=v2.1"));
+#elif NETCOREAPP3_1
+            Assert.That(_assemblyDef.TryGetFrameworkName(out frameworkName), Is.True);
+            Assert.That(frameworkName, Is.EqualTo(".NETCoreApp,Version=v3.1"));
+#elif NET5_0
+            Assert.That(_assemblyDef.TryGetFrameworkName(out frameworkName), Is.True);
+            Assert.That(frameworkName, Is.EqualTo(".NETCoreApp,Version=v5.0"));
+#elif NET6_0
+            Assert.That(_assemblyDef.TryGetFrameworkName(out frameworkName), Is.True);
+            Assert.That(frameworkName, Is.EqualTo(".NETCoreApp,Version=v6.0"));
+#elif NET7_0
+            Assert.That(_assemblyDef.TryGetFrameworkName(out frameworkName), Is.True);
+            Assert.That(frameworkName, Is.EqualTo(".NETCoreApp,Version=v7.0"));
+#elif NET8_0
+            Assert.That(_assemblyDef.TryGetFrameworkName(out frameworkName), Is.True);
+            Assert.That(frameworkName, Is.EqualTo(".NETCoreApp,Version=v8.0"));
 #else
             Assert.Fail($"Untested target runtime: {_assemblyDef.GetFrameworkName()}");
 #endif
