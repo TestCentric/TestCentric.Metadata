@@ -76,10 +76,22 @@ namespace TestCentric.Metadata
             return new Version(runtimeVersion);
         }
 
+        [Obsolete("Use TryGetFrameworkName in place of this method, which will be removed in a future release.")]
         public static string GetFrameworkName(this AssemblyDefinition assemblyDef)
         {
             var attr = assemblyDef.GetAttribute("System.Runtime.Versioning.TargetFrameworkAttribute");
             return attr?.ConstructorArguments[0].Value as string;
+        }
+
+        public static bool TryGetFrameworkName(this AssemblyDefinition assemblyDef, out string frameworkName)
+        {
+            frameworkName = null;
+            var attr = assemblyDef.GetAttribute("System.Runtime.Versioning.TargetFrameworkAttribute");
+
+            if (attr != null)
+                frameworkName = attr?.ConstructorArguments[0].Value as string;
+
+            return frameworkName != null;
         }
 
         #endregion
